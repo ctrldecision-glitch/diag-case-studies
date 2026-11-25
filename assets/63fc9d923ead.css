@@ -1,0 +1,287 @@
+/*------------------------------------*\
+    #Testimonials Slider
+\*------------------------------------*/
+.c-testimonials-slider {
+  position: relative;
+}
+@media (min-width: 641px) {
+  .c-testimonials-slider {
+    padding-left: 69px;
+    padding-right: 69px;
+  }
+}
+.c-testimonials-slider:not(.flickity-enabled) {
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+}
+.c-testimonials-slider__item {
+  display: -webkit-box;
+  display: flex;
+  width: calc(100% / 1);
+  margin-bottom: 34px;
+}
+@media (min-width: 48em) {
+  .c-testimonials-slider__item {
+    width: calc(100% / 3);
+  }
+}
+@media (min-width: 64em) {
+  .c-testimonials-slider__item {
+    width: calc(100% / 3);
+  }
+}
+@media (min-width: 100em) {
+  .c-testimonials-slider__item {
+    width: calc(100% / 3);
+  }
+}
+.c-testimonials-slider:not(.flickity-enabled) .c-testimonials-slider__item {
+  -webkit-box-flex: 1;
+  flex: 1 1 240px;
+}
+.c-testimonials-slider__item-inner {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-align: center;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 15px;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+@media (--md-min) {
+  .c-testimonials-slider__item-inner {
+    min-height: 100%;
+  }
+}
+.c-testimonials-slider__item:first-child .c-testimonials-slider__item-inner {
+  margin-left: 0;
+}
+.c-testimonials-slider__item:last-child .c-testimonials-slider__item-inner {
+  margin-right: 0;
+}
+.c-testimonials-slider__header {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 0 17px;
+  padding: 0;
+}
+.c-testimonials-slider__photo {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.c-testimonials-slider__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  font-family: 'object-fit: cover;';
+}
+.c-testimonials-slider__title {
+  margin: 10px 0 0;
+  color: currentColor;
+  font-size: 1rem;
+  text-align: center;
+}
+.c-testimonials-slider__content {
+  -webkit-box-ordinal-group: 0;
+  order: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: none;
+  font-size: none;
+}
+.c-testimonials-slider__content p {
+  margin: 0;
+  text-align: center;
+}
+.c-testimonials-slider .flickity-viewport {
+  transition: height 0.2s;
+}
+.c-testimonials-slider .flickity-prev-next-button {
+  display: none;
+  background: rgba(255, 255, 255, 0.75);
+  width: 44px;
+  height: 44px;
+  border-radius: 100%;
+  transition: background 0.25s;
+}
+@media (min-width: 641px) {
+  .c-testimonials-slider .flickity-prev-next-button {
+    display: block;
+  }
+}
+.c-testimonials-slider .flickity-prev-next-button svg path {
+  fill: #333;
+}
+.c-testimonials-slider .flickity-prev-next-button:hover,
+.c-testimonials-slider .flickity-prev-next-button:focus {
+  background: rgba(255, 255, 255, 0.75);
+}
+.c-testimonials-slider .flickity-prev-next-button:hover svg path,
+.c-testimonials-slider .flickity-prev-next-button:focus svg path {
+  fill: #333;
+}
+.c-testimonials-slider .flickity-page-dots {
+  display: block;
+  position: relative;
+  bottom: auto;
+  margin-bottom: 17px;
+}
+.c-testimonials-slider .flickity-page-dots .dot {
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin: 0 0.8em;
+  background: rgba(51, 51, 51, 0.25);
+  border-radius: 100%;
+  opacity: 1;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.c-testimonials-slider .flickity-page-dots .dot.is-selected {
+  background: #333;
+}
+/*! Flickity v2.0.10
+http://flickity.metafizzy.co
+---------------------------------------------- */
+.flickity-enabled {
+  position: relative;
+}
+.flickity-enabled:focus {
+  outline: none;
+}
+.flickity-viewport {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+.flickity-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+/* draggable */
+.flickity-enabled.is-draggable {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.flickity-enabled.is-draggable .flickity-viewport {
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.flickity-enabled.is-draggable .flickity-viewport.is-pointer-down {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+/* ---- previous/next buttons ---- */
+.flickity-prev-next-button {
+  position: absolute;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: white;
+  background: hsla(0, 0%, 100%, 0.75);
+  cursor: pointer;
+  /* vertically center */
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.flickity-prev-next-button:hover {
+  background: white;
+}
+.flickity-prev-next-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 5px #09f;
+}
+.flickity-prev-next-button:active {
+  opacity: 0.6;
+}
+.flickity-prev-next-button.previous {
+  left: 10px;
+}
+.flickity-prev-next-button.next {
+  right: 10px;
+}
+/* right to left */
+.flickity-rtl .flickity-prev-next-button.previous {
+  left: auto;
+  right: 10px;
+}
+.flickity-rtl .flickity-prev-next-button.next {
+  right: auto;
+  left: 10px;
+}
+.flickity-prev-next-button:disabled {
+  opacity: 0.3;
+  cursor: auto;
+}
+.flickity-prev-next-button svg {
+  position: absolute;
+  left: 20%;
+  top: 20%;
+  width: 60%;
+  height: 60%;
+}
+.flickity-prev-next-button .arrow {
+  fill: #333;
+}
+/* ---- page dots ---- */
+.flickity-page-dots {
+  position: absolute;
+  width: 100%;
+  bottom: -25px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: center;
+  line-height: 1;
+}
+.flickity-rtl .flickity-page-dots {
+  direction: rtl;
+}
+.flickity-page-dots .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 8px;
+  background: #333;
+  border-radius: 50%;
+  opacity: 0.25;
+  cursor: pointer;
+}
+.flickity-page-dots .dot.is-selected {
+  opacity: 1;
+}
