@@ -1,4 +1,23 @@
-/* Local UI only. The source page's copy, markup and section order are retained. */
+g/* Local UI only. The source page's copy, markup and section order are retained. */
+document.querySelectorAll('a[href*="calendar.google.com"], a[href*="calendly.com"], a[href*="acuityscheduling.com"]').forEach(link=>{
+ link.removeAttribute('href');
+ link.setAttribute('aria-disabled','true');
+ link.setAttribute('tabindex','-1');
+ link.addEventListener('click',event=>event.preventDefault());
+});
+document.querySelectorAll('form').forEach(form=>{
+ form.removeAttribute('action');
+ form.removeAttribute('method');
+ form.removeAttribute('target');
+ form.setAttribute('aria-disabled','true');
+ form.addEventListener('submit',event=>event.preventDefault());
+ form.querySelectorAll('input, textarea, select, button').forEach(control=>{
+  control.removeAttribute('name');
+  control.setAttribute('aria-disabled','true');
+  control.setAttribute('disabled','');
+ });
+});
+document.addEventListener('submit',event=>event.preventDefault(),true);
 const header=document.querySelector('#header');
 const burgers=document.querySelectorAll('.header-burger-btn');
 function setMenu(open){
