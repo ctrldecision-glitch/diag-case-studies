@@ -1,4 +1,4 @@
-g/* Local UI only. The source page's copy, markup and section order are retained. */
+/* Local UI only. The source page's copy, markup and section order are retained. */
 document.querySelectorAll('a[href*="calendar.google.com"], a[href*="calendly.com"], a[href*="acuityscheduling.com"]').forEach(link=>{
  link.removeAttribute('href');
  link.setAttribute('aria-disabled','true');
