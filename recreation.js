@@ -1,10 +1,21 @@
 /* Local UI only. The source page's copy, markup and section order are retained. */
-document.querySelectorAll('a[href*="calendar.google.com"], a[href*="calendly.com"], a[href*="acuityscheduling.com"]').forEach(link=>{
+const disableLink=link=>{
  link.removeAttribute('href');
  link.setAttribute('aria-disabled','true');
  link.setAttribute('tabindex','-1');
  link.addEventListener('click',event=>event.preventDefault());
+};
+document.querySelectorAll('.header-title-logo a, .header-nav a, .header-menu-nav-list a, .header-actions a, .sqs-block-button-element, footer a').forEach(disableLink);
+document.querySelectorAll('.header-nav-folder-title').forEach(button=>{
+ button.removeAttribute('data-href');
+ button.setAttribute('aria-disabled','true');
+ button.setAttribute('tabindex','-1');
+ button.addEventListener('click',event=>event.preventDefault());
 });
+document.addEventListener('click',event=>{
+ const disabled=event.target.closest('[aria-disabled="true"]');
+ if(disabled){event.preventDefault();event.stopImmediatePropagation()}
+},true);
 document.querySelectorAll('form').forEach(form=>{
  form.removeAttribute('action');
  form.removeAttribute('method');
@@ -30,6 +41,7 @@ function setMenu(open){
 burgers.forEach(burger=>burger.addEventListener('click',()=>setMenu(!document.body.classList.contains('header--menu-open'))));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
 document.querySelectorAll('.header-nav-folder-title').forEach(button=>{
+ if(button.getAttribute('aria-disabled')==='true')return;
  button.addEventListener('click',()=>{
   const open=button.getAttribute('aria-expanded')!=='true';
   button.setAttribute('aria-expanded',String(open));
