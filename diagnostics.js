@@ -22,8 +22,7 @@
 
   const evidence = {
     'diag-bloomdance-results': bloomResults,
-    'diag-rayla-results': raylaResult,
-    'diag-three-month-package': packageCard
+    'diag-rayla-results': raylaResult
   };
   for (const [id, target] of Object.entries(evidence)) {
     target.id = id;
@@ -104,8 +103,7 @@
         "The $3,000 coaching package lists sessions, messaging, and resources. It doesn't list branding or website implementation.",
         "The case study doesn't distinguish what coaching contributed from what the additional services contributed."
       ],
-      question: 'What can I reasonably expect from the coaching package itself?',
-      extra: '<div class="diag-links"><a href="#diag-three-month-package">View package</a></div>'
+      question: 'What can I reasonably expect from the coaching package itself?'
     }
   ];
 
@@ -166,6 +164,13 @@
   ];
   const originalSections = [...document.querySelectorAll('#page section[data-section-id]'), footer];
   const rows = strips.flatMap(([, strip]) => [...strip.querySelectorAll('.diag-item')]);
+  const triggers = rows.map(row => row.querySelector('.diag-trigger'));
+  const diagnosticControls = strips.flatMap(([, strip]) =>
+    [...strip.querySelectorAll('.diag-trigger, .diag-links a, summary')]
+  );
+  const navBar = header.querySelector('.header-announcement-bar-wrapper') ?? header;
+  const navOffset = () => Math.ceil(navBar.getBoundingClientRect().height);
+  const headerClearance = () => navOffset() + 12;
   let expanded = null;
 
   function positionPricingStrip() {
@@ -180,28 +185,30 @@
 
   function setExpanded(index, open) {
     const row = rows[index];
-    row.querySelector('.diag-trigger').setAttribute('aria-expanded', String(open));
+    triggers[index].setAttribute('aria-expanded', String(open));
     row.querySelector('.diag-symbol').textContent = open ? '−' : '+';
     row.querySelector('.diag-panel').hidden = !open;
     if (!open) row.querySelector('details[open]')?.removeAttribute('open');
     diagnoses[index].highlight?.classList.toggle('diag-evidence-highlight', open);
   }
 
-  function keepPosition(anchor, update) {
+  function keepPosition(anchor, update, minimumTop = -Infinity) {
     const top = anchor.getBoundingClientRect().top;
     update();
-    const shift = anchor.getBoundingClientRect().top - top;
-    if (shift) window.scrollBy({ top: shift, behavior: 'instant' });
+    const updatedTop = anchor.getBoundingClientRect().top;
+    if (updatedTop === top) return;
+    // An upward scroll adjustment brings back the original fixed header.
+    const visibleTop = updatedTop < top ? Math.max(top, minimumTop) : top;
+    window.scrollBy({ top: updatedTop - visibleTop, behavior: 'instant' });
   }
 
-  rows.forEach((row, index) => {
-    const trigger = row.querySelector('.diag-trigger');
+  triggers.forEach((trigger, index) => {
     trigger.addEventListener('click', () => {
       keepPosition(trigger, () => {
         if (expanded !== null) setExpanded(expanded, false);
         expanded = expanded === index ? null : index;
         if (expanded !== null) setExpanded(expanded, true);
-      });
+      }, headerClearance());
     });
   });
 
@@ -239,43 +246,61 @@
     keepPosition(readingAnchor(), () => renderDiagnostics(enabled));
   });
 
-  const navBar = header.querySelector('.header-announcement-bar-wrapper') ?? header;
-  const navOffset = () => Math.ceil(navBar.getBoundingClientRect().height);
-
   function positionToggle() {
-    toggle.style.setProperty('--diag-nav-height', `${navOffset()}px`);
+    const { left, right, height } = toggle.getBoundingClientRect();
+    const defaultTop = navOffset() + 8;
+    const obstacles = diagnosticControls.map(control => control.getBoundingClientRect())
+      .filter(rect => rect.height && rect.left < right && rect.right > left);
+    const candidates = [defaultTop, ...obstacles.map(rect => rect.bottom + 4)]
+      .filter(top => top >= defaultTop && top + height <= window.innerHeight)
+      .sort((a, b) => a - b);
+    const top = candidates.find(y => obstacles.every(rect => y >= rect.bottom || y + height <= rect.top));
+    toggle.style.setProperty('--diag-toggle-top', `${top ?? defaultTop}px`);
   }
-  new ResizeObserver(positionToggle).observe(navBar);
-  positionToggle();
 
-  function revealEvidence(hash) {
+  let toggleFrame = 0;
+  function scheduleTogglePosition() {
+    if (toggleFrame) return;
+    toggleFrame = requestAnimationFrame(() => {
+      toggleFrame = 0;
+      positionToggle();
+    });
+  }
+
+  const toggleObserver = new ResizeObserver(scheduleTogglePosition);
+  for (const element of [navBar, toggle, ...strips.map(([, strip]) => strip)]) {
+    toggleObserver.observe(element);
+  }
+  window.addEventListener('scroll', scheduleTogglePosition, { passive: true });
+  window.addEventListener('resize', scheduleTogglePosition);
+
+  function revealHashTarget(hash) {
     const id = hash.slice(1);
-    if (!Object.hasOwn(evidence, id)) return;
-    const target = evidence[id];
+    const target = Object.hasOwn(evidence, id) ? evidence[id] : triggers.find(trigger => trigger.id === id);
+    if (!target?.isConnected) return;
     if (target === raylaResult && raylaTrigger.getAttribute('aria-expanded') === 'false') {
       raylaTrigger.click();
     }
     target.focus({ preventScroll: true });
     window.scrollBy({
-      top: target.getBoundingClientRect().top - navOffset() - 12,
+      top: target.getBoundingClientRect().top - headerClearance(),
       behavior: 'instant'
     });
   }
 
-  for (const [, strip] of strips) {
-    strip.addEventListener('click', event => {
-      const link = event.target.closest('.diag-links a');
-      if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      event.preventDefault();
-      if (window.location.hash !== link.hash) history.pushState(null, '', link.hash);
-      revealEvidence(link.hash);
-    });
-  }
+  pricingStrip.addEventListener('click', event => {
+    const link = event.target.closest('.diag-links a');
+    if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (window.location.hash !== link.hash) history.pushState(null, '', link.hash);
+    revealHashTarget(link.hash);
+  });
 
   renderDiagnostics(true);
-  addEventListener('hashchange', () => revealEvidence(window.location.hash));
-  if (Object.hasOwn(evidence, window.location.hash.slice(1))) {
-    // Initial font loading can move the target before the page settles.
-    window.addEventListener('load', () => revealEvidence(window.location.hash), { once: true });
+  positionToggle();
+  window.addEventListener('hashchange', () => revealHashTarget(window.location.hash));
+  if (window.location.hash) {
+    // CSS and fonts can change the target's position during the initial load.
+    window.addEventListener('load', () => revealHashTarget(window.location.hash), { once: true });
   }
 })();
