@@ -7,127 +7,98 @@
   const pricing = section('6797b7e93da35e55cc604499');
   const packageGrid = pricing?.querySelector('.coaching-packages');
   const bloomInterventions = section('674f0b978d7c0436bb1aad36');
-  const bloomResults = section('68236a51ea2bb56a69276811')?.querySelector('h2');
   const footer = document.getElementById('footer-sections');
   const header = document.getElementById('header');
-  const raylaPanel = document.getElementById('dropdown-2cd48ec898e51edf05ab-2');
-  const raylaResult = [...(raylaPanel?.querySelectorAll('p') ?? [])]
-    .find(paragraph => paragraph.textContent.includes('double her profits'));
-  const raylaTrigger = raylaPanel?.closest('.accordion-item')?.querySelector('.accordion-item__click-target');
   const packageCard = [...(packageGrid?.querySelectorAll('.package-box') ?? [])]
     .find(card => card.querySelector('.title')?.textContent.includes('3-Month'));
 
-  if (![chapterThree, chapterFour, pricing, bloomInterventions, footer, header,
-    bloomResults, raylaResult, raylaTrigger, packageCard].every(Boolean)) return;
-
-  const evidence = {
-    'diag-bloomdance-results': bloomResults,
-    'diag-rayla-results': raylaResult
-  };
-  for (const [id, target] of Object.entries(evidence)) {
-    target.id = id;
-    target.tabIndex = -1;
-  }
+  if (![chapterThree, chapterFour, pricing, bloomInterventions, footer, header, packageCard].every(Boolean)) return;
 
   const diagnoses = [
     {
       number: '01',
-      title: 'The cost of waiting remains abstract',
+      title: "A quiet month never gets a price",
       paragraphs: [
-        "Maya's story establishes the problem: “No steady flow. No predictability.”",
-        'But the coaching solution appears before the financial consequence of another quiet month becomes clear.'
+        "The story says \"No steady flow. No predictability.\" Then it moves straight to the coach. It never says what one quiet month costs.",
+        "The first dollar figure on the page is the $250 Focus Session.",
+        "With no cost on the page, waiting is free. $3,000 gets compared with $0."
       ],
-      question: 'What is waiting costing my business?'
+      question: "What is waiting costing my business?"
     },
     {
       number: '02',
-      title: 'Activities, not a path',
+      title: "The plan is on the page. The help to carry it out is in the FAQ",
       paragraphs: [
-        'Chapter 4 lists four coaching activities: positioning, pricing, marketing, and business organization.',
-        "It explains what coaching covers, but not how those activities build on each other. Practical implementation support isn't explained in detail until the FAQs."
+        "Coaching covers four things: niche and message, offers and pricing, a marketing plan, and organization. All four are planning.",
+        "The page also says Maya already \"absorbed a flood of advice.\"",
+        "Help with writing copy, creating content and implementing appears only in the FAQ. The $3,000 package doesn't list it.",
+        "They think: \"I've had advice before. Will I still be doing this alone?\""
       ],
-      question: 'How will this coaching solve my problem?'
+      question: "Will I get help doing the work, or only a plan?"
     },
     {
       number: '03',
-      title: 'The three-month outcome remains vague',
+      title: "Seven sessions, no finish line",
       paragraphs: [
-        'The $3,000 package specifies session lengths, messaging support, and resources.',
-        "Its stated outcome is to “start booking the right clients,” but doesn't explain what that progress should look like by the end of three months."
+        "The $3,000 package lists one 90-minute session, six 60-minute sessions, unlimited messaging and templates. Its only result line is \"Launch strong and start booking the right clients.\"",
+        "No number. No time frame. The buyer can count the hours, but can't see what three months produces."
       ],
-      question: 'What should be different about my business after three months?',
+      question: "What will be different in my business after three months?",
       highlight: packageCard.querySelector('.features li:last-child')
     },
     {
       number: '04',
-      title: 'Detailed proof arrives after pricing',
+      title: "The proof that justifies $3,000 sits below the $3,000",
       paragraphs: [
-        "The hero contains a short testimonial, but the buyer reaches $3,000 before seeing BloomDance's revenue results or Rayla's profit growth from $35,000 to $70,000.",
-        'The evidence exists. It arrives after the investment is presented.'
+        "The only testimonial above the price says profits \"literally doubled.\" It gives no figures.",
+        "Rayla's $35,000 to $70,000 appears in the FAQ. BloomDance's 2.5× comes after the packages.",
+        "The buyer meets the price holding one word: \"doubled.\" Doubled from what?"
       ],
-      question: 'Has this approach produced results worth investing in?',
-      highlight: packageCard.querySelector('.price'),
-      extra: `<div class="diag-links">
-        <a href="#diag-bloomdance-results">View BloomDance results</a>
-        <a href="#diag-rayla-results">View Rayla's results</a>
-      </div>`
+      question: "Has this worked well enough to be worth the investment?",
+      highlight: packageCard.querySelector('.price')
     },
     {
       number: '05',
-      title: 'The button obscures the next step',
+      title: "Three \"buy\" buttons open a booking calendar",
       paragraphs: [
-        `“LET'S DO IT!”, “I'M READY!”, and “SIGN ME UP!” all link to the same calendar URL as the free strategy session.`,
-        'The package buttons suggest commitment without explicitly explaining what happens next.'
+        "\"LET'S DO IT!\", \"I'M READY!\" and \"SIGN ME UP!\" link to the same calendar as the free strategy call. Nothing on the page says whether the click is a purchase or a call.",
+        "A buyer who clicks \"SIGN ME UP!\" expecting checkout gets a booking link."
       ],
-      question: 'Am I purchasing coaching or booking a conversation?',
-      highlight: packageCard.querySelector('.sqs-block-button-element'),
-      extra: `<div class="diag-comparison">
-        <p class="diag-label">Evidence from the original website</p>
-        <ul>
-          <li>Book a Free Strategy Session</li>
-          <li>LET'S DO IT!</li>
-          <li>I'M READY!</li>
-          <li>SIGN ME UP!</li>
-        </ul>
-        <details>
-          <summary>Shared calendar destination</summary>
-          <p class="diag-calendar">https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2cyZQVweeJTm2zAnsn4jfr8XXkIPJlzNROXxUpnFTdW-V92j-XHtWE2juiANz3WH8T9h7W5KPQ</p>
-        </details>
-      </div>`
+      question: "Am I buying coaching, or booking a call?",
+      highlight: packageCard.querySelector('.sqs-block-button-element')
     },
     {
       number: '06',
-      title: "The proof and the offer don't fully match",
+      title: "The proof sold a bigger job than the $3,000 package",
       paragraphs: [
-        "BloomDance's results followed pricing changes, marketing implementation, rebranding, and website work.",
-        "The $3,000 coaching package lists sessions, messaging, and resources. It doesn't list branding or website implementation.",
-        "The case study doesn't distinguish what coaching contributed from what the additional services contributed."
+        "BloomDance's results came with pricing changes, SEO, social and email marketing, a rebrand and a new website.",
+        "The $3,000 package lists sessions, messaging and templates. No rebrand. No website. The page never says what coaching alone contributed.",
+        "They think: \"Would $3,000 get me that, or is that a bigger project?\""
       ],
-      question: 'What can I reasonably expect from the coaching package itself?'
+      question: "What can I expect from the package itself?"
     }
   ];
 
   function createStrip(items) {
     const strip = document.createElement('div');
     strip.className = 'diag-strip';
-    strip.innerHTML = items.map(({ number, title, paragraphs, question, extra }) => `
+    strip.innerHTML = items.map(({ number, title, paragraphs, question }) => `
       <div class="diag-item">
         <h3 class="diag-heading">
           <button class="diag-trigger" type="button" id="diag-trigger-${number}"
             aria-expanded="false" aria-controls="diag-panel-${number}">
-            <span class="diag-number">${number}</span>
-            <span class="diag-title">${title}</span>
+            <span class="diag-label">DECISION BREAK ${number}</span>
             <span class="diag-symbol" aria-hidden="true">+</span>
+            <span class="diag-title">${title}</span>
           </button>
         </h3>
         <div class="diag-panel" id="diag-panel-${number}" role="region"
           aria-labelledby="diag-trigger-${number}" hidden>
           ${paragraphs.map(paragraph => `<p>${paragraph}</p>`).join('')}
           <div class="diag-decision">
-            <p class="diag-label">Unresolved decision</p>
+            <p class="diag-label">UNRESOLVED DECISION</p>
             <p>${question}</p>
           </div>
-          ${extra ?? ''}
         </div>
       </div>`).join('');
     return strip;
@@ -138,10 +109,14 @@
   central.setAttribute('aria-labelledby', 'diag-central-title');
   central.innerHTML = `<div class="diag-editorial">
     <p class="diag-label">CENTRAL DECISION BREAK</p>
-    <h2 id="diag-central-title">Price before sufficient commercial justification.</h2>
-    <p>The buyer reaches $3,000 with an unclear financial cost of waiting, a vague three-month outcome, and detailed commercial evidence still further down the page.</p>
-    <p>They know what they're paying for.</p>
-    <p>They don't yet have enough information to judge whether it's worth paying for.</p>
+    <h2 id="diag-central-title">The price arrives before the reasons to pay it</h2>
+    <p>At $3,000 the buyer knows what's in the package. They can't tell what it's worth.</p>
+    <ul>
+      <li>Waiting has no cost (Break 01)</li>
+      <li>The package has no finish line (Break 03)</li>
+      <li>The proof comes after the price (Break 04)</li>
+    </ul>
+    <p>A buyer who can't judge the value doesn't say no. They say "later."</p>
   </div>`;
 
   const toggle = document.createElement('button');
@@ -165,12 +140,12 @@
   const originalSections = [...document.querySelectorAll('#page section[data-section-id]'), footer];
   const rows = strips.flatMap(([, strip]) => [...strip.querySelectorAll('.diag-item')]);
   const triggers = rows.map(row => row.querySelector('.diag-trigger'));
-  const diagnosticControls = strips.flatMap(([, strip]) =>
-    [...strip.querySelectorAll('.diag-trigger, .diag-links a, summary')]
-  );
+  const cards = strips.map(([, strip]) => strip);
   const navBar = header.querySelector('.header-announcement-bar-wrapper') ?? header;
   const navOffset = () => Math.ceil(navBar.getBoundingClientRect().height);
   const headerClearance = () => navOffset() + 12;
+  const mobileToggle = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+  const viewport = window.visualViewport;
   let expanded = null;
 
   function positionPricingStrip() {
@@ -188,18 +163,20 @@
     triggers[index].setAttribute('aria-expanded', String(open));
     row.querySelector('.diag-symbol').textContent = open ? '−' : '+';
     row.querySelector('.diag-panel').hidden = !open;
-    if (!open) row.querySelector('details[open]')?.removeAttribute('open');
     diagnoses[index].highlight?.classList.toggle('diag-evidence-highlight', open);
   }
 
   function keepPosition(anchor, update, minimumTop = -Infinity) {
     const top = anchor.getBoundingClientRect().top;
+    const documentTop = top + window.scrollY;
     update();
     const updatedTop = anchor.getBoundingClientRect().top;
-    if (updatedTop === top) return;
-    // An upward scroll adjustment brings back the original fixed header.
-    const visibleTop = updatedTop < top ? Math.max(top, minimumTop) : top;
-    window.scrollBy({ top: updatedTop - visibleTop, behavior: 'instant' });
+    // Scroll anchoring may already have moved the viewport when a row moves up.
+    // Leave room for the original fixed header, which returns on upward scroll.
+    const movedUp = updatedTop + window.scrollY < documentTop - 1;
+    const visibleTop = movedUp ? Math.max(top, minimumTop) : top;
+    const shift = updatedTop - visibleTop;
+    if (Math.abs(shift) > 0.5) window.scrollBy({ top: shift, behavior: 'instant' });
   }
 
   triggers.forEach((trigger, index) => {
@@ -209,6 +186,7 @@
         expanded = expanded === index ? null : index;
         if (expanded !== null) setExpanded(expanded, true);
       }, headerClearance());
+      positionToggle();
     });
   });
 
@@ -244,18 +222,44 @@
     const enabled = toggle.getAttribute('aria-checked') === 'false';
     toggle.setAttribute('aria-checked', String(enabled));
     keepPosition(readingAnchor(), () => renderDiagnostics(enabled));
+    positionToggle();
   });
 
-  function positionToggle() {
-    const { left, right, height } = toggle.getBoundingClientRect();
-    const defaultTop = navOffset() + 8;
-    const obstacles = diagnosticControls.map(control => control.getBoundingClientRect())
+  function desktopToggleTop({ left, right, height }, defaultTop) {
+    const obstacles = triggers.map(control => control.getBoundingClientRect())
       .filter(rect => rect.height && rect.left < right && rect.right > left);
     const candidates = [defaultTop, ...obstacles.map(rect => rect.bottom + 4)]
       .filter(top => top >= defaultTop && top + height <= window.innerHeight)
       .sort((a, b) => a - b);
-    const top = candidates.find(y => obstacles.every(rect => y >= rect.bottom || y + height <= rect.top));
-    toggle.style.setProperty('--diag-toggle-top', `${top ?? defaultTop}px`);
+    return candidates.find(y => obstacles.every(rect => y >= rect.bottom || y + height <= rect.top)) ?? defaultTop;
+  }
+
+  function mobileToggleTop(height, defaultTop) {
+    const clearance = 12;
+    const viewportTop = viewport?.offsetTop ?? 0;
+    const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight);
+    // Keep the upper slot stable until the original navigation has slid away.
+    const headerIsHidden = header.style.transform === 'translateY(-100%)'
+      && navBar.getBoundingClientRect().bottom <= 0.5;
+    const headerBottom = headerIsHidden ? 0 : navOffset();
+    const firstTop = Math.ceil(Math.max(viewportTop, headerBottom) + 8);
+    const lastTop = Math.floor(viewportBottom - height - 8);
+    const obstacles = cards.map(card => card.getBoundingClientRect()).filter(rect =>
+      rect.height && rect.bottom + clearance > viewportTop && rect.top - clearance < viewportBottom
+    );
+    // Prefer stable viewport edges before trying the gap below an individual strip.
+    const candidates = [defaultTop, lastTop, firstTop, ...obstacles.map(rect => Math.ceil(rect.bottom + clearance))];
+    return candidates.find(y => y >= firstTop && y <= lastTop && obstacles.every(rect =>
+      y >= rect.bottom + clearance || y + height <= rect.top - clearance
+    ));
+  }
+
+  function positionToggle() {
+    const rect = toggle.getBoundingClientRect();
+    const defaultTop = navOffset() + 8;
+    const top = mobileToggle.matches ? mobileToggleTop(rect.height, defaultTop) : desktopToggleTop(rect, defaultTop);
+    toggle.toggleAttribute('data-diag-obstructed', top === undefined);
+    if (top !== undefined) toggle.style.setProperty('--diag-toggle-top', `${top}px`);
   }
 
   let toggleFrame = 0;
@@ -268,33 +272,31 @@
   }
 
   const toggleObserver = new ResizeObserver(scheduleTogglePosition);
-  for (const element of [navBar, toggle, ...strips.map(([, strip]) => strip)]) {
+  for (const element of [navBar, toggle, ...cards]) {
     toggleObserver.observe(element);
   }
   window.addEventListener('scroll', scheduleTogglePosition, { passive: true });
   window.addEventListener('resize', scheduleTogglePosition);
+  viewport?.addEventListener('scroll', scheduleTogglePosition, { passive: true });
+  viewport?.addEventListener('resize', scheduleTogglePosition);
+  mobileToggle.addEventListener('change', scheduleTogglePosition);
+  for (const eventName of ['transitionend', 'transitioncancel']) {
+    header.addEventListener(eventName, event => {
+      if (event.target === header && event.propertyName === 'transform') scheduleTogglePosition();
+    });
+  }
+  document.fonts.addEventListener('loadingdone', scheduleTogglePosition);
 
   function revealHashTarget(hash) {
     const id = hash.slice(1);
-    const target = Object.hasOwn(evidence, id) ? evidence[id] : triggers.find(trigger => trigger.id === id);
+    const target = triggers.find(trigger => trigger.id === id);
     if (!target?.isConnected) return;
-    if (target === raylaResult && raylaTrigger.getAttribute('aria-expanded') === 'false') {
-      raylaTrigger.click();
-    }
     target.focus({ preventScroll: true });
     window.scrollBy({
       top: target.getBoundingClientRect().top - headerClearance(),
       behavior: 'instant'
     });
   }
-
-  pricingStrip.addEventListener('click', event => {
-    const link = event.target.closest('.diag-links a');
-    if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    if (window.location.hash !== link.hash) history.pushState(null, '', link.hash);
-    revealHashTarget(link.hash);
-  });
 
   renderDiagnostics(true);
   positionToggle();
