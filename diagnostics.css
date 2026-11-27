@@ -1,0 +1,388 @@
+/* Faces used by the original DIAG site: https://delightful-beet-831632.framer.app/ */
+@font-face {
+  font-family: 'DIAG Instrument';
+  src: url('https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zcZj1bIkNo.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DIAG Instrument';
+  src: url('https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zATjnTNgNq55w.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DIAG Geist';
+  src: url('https://fonts.gstatic.com/s/geist/v5/gyBhhwUxId8gMGYQMKR3pzfaWI_RnOM4mJPby1QNtA.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DIAG Inter';
+  src: url('https://framerusercontent.com/assets/GrgcKwrN6d3Uz8EwcLHZxwEfC4.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.diag-strip,
+.diag-central,
+.diag-toggle,
+.diag-disclosure {
+  --diag-bg: #171816;
+  --diag-text: #eeece6;
+  --diag-secondary: #a6a49d;
+  --diag-brass: #a68a5b;
+  --diag-divider: #353631;
+  --diag-gutter: clamp(20px, 4vw, 64px);
+  --diag-padding: 32px;
+  --diag-font: 'DIAG Geist', Geist, Arial, sans-serif;
+  --diag-serif: 'DIAG Instrument', 'Instrument Serif', Georgia, serif;
+  font-family: var(--diag-font);
+  color: var(--diag-text);
+}
+
+.diag-strip {
+  box-sizing: border-box;
+  max-width: 1200px;
+  width: calc(100% - 2 * var(--diag-gutter));
+  margin: 0 auto;
+  border-radius: 4px;
+  background: var(--diag-bg);
+}
+
+@media (min-width: 1024px) {
+  .diag-pricing-strip {
+    margin-block-start: var(--diag-pricing-offset, 0px);
+  }
+}
+
+.diag-item + .diag-item {
+  border-top: 1px solid var(--diag-divider);
+}
+
+.diag-strip .diag-heading {
+  margin: 0;
+  font: inherit;
+}
+
+.diag-trigger {
+  appearance: none;
+  position: relative;
+  display: grid;
+  grid-template-columns: 2ch minmax(0, 1fr) 1em;
+  align-items: first baseline;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--diag-padding);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--diag-text);
+  font: 400 20px / 1.35 var(--diag-font);
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.diag-item:first-child .diag-trigger::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -12px;
+  top: 50%;
+  width: 12px;
+  height: 1px;
+  background: var(--diag-brass);
+  pointer-events: none;
+}
+
+.diag-number,
+.diag-symbol {
+  color: var(--diag-brass);
+}
+
+.diag-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+.diag-title {
+  font-family: var(--diag-serif);
+  letter-spacing: -0.02em;
+}
+
+.diag-symbol {
+  text-align: right;
+}
+
+.diag-trigger:focus-visible,
+.diag-toggle:focus-visible {
+  outline: 2px solid var(--diag-brass);
+  outline-offset: -4px;
+}
+
+.diag-panel {
+  padding: 0 var(--diag-padding) var(--diag-padding);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.2px;
+  color: var(--diag-secondary);
+}
+
+.diag-panel[hidden] {
+  display: none;
+}
+
+.diag-panel p,
+.diag-editorial p,
+.diag-panel ul {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+/* The exported site's paragraph and heading fonts are marked important. */
+.diag-panel p,
+.diag-editorial p,
+#footer-sections .diag-disclosure {
+  font-family: var(--diag-font) !important;
+}
+
+.diag-panel p + p,
+.diag-editorial p + p {
+  margin-top: 12px;
+}
+
+.diag-decision,
+.diag-comparison {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--diag-divider);
+}
+
+.diag-decision {
+  color: var(--diag-text);
+}
+
+.diag-panel .diag-label,
+.diag-editorial .diag-label {
+  margin: 0 0 6px;
+  color: var(--diag-brass);
+  font-size: 11px;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+}
+
+.diag-panel .diag-label + p {
+  margin-top: 0;
+}
+
+.diag-decision .diag-label + p {
+  font-family: var(--diag-serif) !important;
+  font-style: italic;
+  letter-spacing: -0.2px;
+}
+
+.diag-links,
+.diag-comparison ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+
+.diag-links {
+  margin-top: 16px;
+}
+
+.diag-links a {
+  color: var(--diag-secondary);
+  font-family: inherit;
+  letter-spacing: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--diag-brass);
+  text-underline-offset: 3px;
+}
+
+.diag-links a:hover {
+  color: var(--diag-text);
+}
+
+.diag-links a:focus-visible,
+.diag-comparison summary:focus-visible {
+  outline: 2px solid var(--diag-brass);
+  outline-offset: 3px;
+}
+
+.diag-comparison {
+  font-size: 14px;
+}
+
+.diag-comparison ul {
+  margin-bottom: 10px;
+  padding: 0;
+  list-style: none;
+  color: var(--diag-text);
+}
+
+.diag-comparison li {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+.diag-comparison ul li::before {
+  content: none;
+}
+
+.diag-comparison summary {
+  display: list-item;
+  width: fit-content;
+  font: inherit;
+  cursor: pointer;
+}
+
+.diag-comparison summary::marker {
+  color: var(--diag-brass);
+}
+
+.diag-comparison .diag-calendar {
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+
+#diag-three-month-package .diag-evidence-highlight {
+  outline: 1px solid #a68a5b;
+  outline-offset: 3px;
+}
+
+.diag-central {
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(56px, 9vw, 140px) var(--diag-gutter);
+  border-radius: 4px;
+  background: var(--diag-bg);
+}
+
+.diag-editorial {
+  max-width: 740px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.1px;
+}
+
+.diag-editorial::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  margin-bottom: 24px;
+  background: var(--diag-brass);
+}
+
+.diag-editorial h2 {
+  margin: 0 0 24px;
+  color: var(--diag-text);
+  font-family: var(--diag-serif) !important;
+  font-size: clamp(26px, 4vw, 44px);
+  font-weight: 400 !important;
+  letter-spacing: -0.026em;
+  line-height: 1.2;
+}
+
+.diag-editorial .diag-label {
+  margin-bottom: 12px;
+}
+
+.diag-toggle {
+  appearance: none;
+  position: fixed;
+  top: calc(var(--diag-nav-height, 0px) + 8px);
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--diag-divider);
+  border-radius: 4px;
+  background: var(--diag-bg);
+  font-family: 'DIAG Inter', Inter, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.header--menu-open .diag-toggle {
+  visibility: hidden;
+}
+
+.diag-switch {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 28px;
+  height: 16px;
+  padding: 2px;
+  border: 1px solid var(--diag-secondary);
+  border-radius: 10px;
+}
+
+.diag-switch::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--diag-text);
+}
+
+.diag-toggle[aria-checked='true'] .diag-switch {
+  justify-content: flex-end;
+  border-color: var(--diag-brass);
+  background: var(--diag-brass);
+}
+
+#footer-sections .diag-disclosure {
+  --diag-font: system-ui, sans-serif;
+  margin: 0;
+  padding: 12px var(--diag-gutter);
+  background: var(--diag-bg);
+  color: var(--diag-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .diag-strip {
+    --diag-padding: 20px;
+  }
+
+  .diag-trigger {
+    gap: 10px;
+  }
+
+  .diag-number {
+    letter-spacing: -0.3px;
+  }
+
+  .diag-panel {
+    letter-spacing: -0.1px;
+  }
+
+  .diag-editorial h2 {
+    letter-spacing: -0.023em;
+  }
+}
