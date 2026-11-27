@@ -145,6 +145,7 @@
     [bloomResults, createStrip(diagnoses.slice(5))]
   ];
   const originalSections = [...document.querySelectorAll('#page section[data-section-id]'), footer];
+  const originalImages = [...document.querySelectorAll('#page .sqs-block-image img, #footer-sections .sqs-block-image img')];
   const rows = strips.flatMap(([, strip]) => [...strip.querySelectorAll('.diag-item')]);
   const triggers = rows.map(row => row.querySelector('.diag-trigger'));
   const diagnosticSections = [...strips.map(([, strip]) => strip), central];
@@ -188,7 +189,7 @@
         expanded = expanded === index ? null : index;
         if (expanded !== null) setExpanded(expanded, true);
       });
-      positionToggle();
+      updateToggleVisibility();
     });
   });
 
@@ -224,65 +225,76 @@
     const enabled = toggle.getAttribute('aria-checked') === 'false';
     toggle.setAttribute('aria-checked', String(enabled));
     keepPosition(readingAnchor(), () => renderDiagnostics(enabled));
-    positionToggle();
+    updateToggleVisibility();
   });
 
-  function safeToggleTop({ left, right, height }, defaultTop) {
-    const clearance = 12;
+  function toggleIsObstructed(hidden) {
+    const { left, right, top, bottom } = toggle.getBoundingClientRect();
     const viewportTop = viewport?.offsetTop ?? 0;
-    const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight);
-    // Keep the upper slot stable until the original navigation has slid away.
-    const headerIsHidden = header.hasAttribute('data-local-header-obstructed')
-      || (header.style.transform === 'translateY(-100%)' && navBar.getBoundingClientRect().bottom <= 0.5);
-    const headerBottom = headerIsHidden ? 0 : navOffset();
-    const firstTop = Math.ceil(Math.max(viewportTop, headerBottom) + 8);
-    const lastTop = Math.floor(viewportBottom - height - 8);
-    const obstacles = diagnosticSections.map(section => section.getBoundingClientRect()).filter(rect =>
-      rect.height && rect.bottom + clearance > viewportTop && rect.top - clearance < viewportBottom
-    );
-    obstacles.push(...localOriginalContentBounds(left - 4, right + 4, viewportTop - clearance, viewportBottom + clearance));
-    // Prefer stable viewport edges and keep the current slot if it is still safe.
-    const currentTop = parseFloat(toggle.style.getPropertyValue('--diag-toggle-top'));
-    const candidates = [defaultTop, lastTop, firstTop, currentTop, ...obstacles.map(rect => Math.ceil(rect.bottom + clearance))];
-    return candidates.find(y => y >= firstTop && y <= lastTop && obstacles.every(rect =>
-      y >= rect.bottom + clearance || y + height <= rect.top - clearance
-    ));
+    if (top < viewportTop || bottom > viewportTop + (viewport?.height ?? window.innerHeight)) return true;
+
+    const nav = navBar.getBoundingClientRect();
+    // As the nav slides in, reserve its destination before it reaches the toggle.
+    const navBottom = header.style.transform === 'translateY(-100%)' ? nav.bottom : nav.height;
+    const originalClearance = hidden ? 4 : 0;
+    const upper = top - originalClearance;
+    const lower = bottom + originalClearance;
+    if (getComputedStyle(header).visibility === 'visible' && navBottom > upper && nav.top < lower) return true;
+
+    const diagnosticClearance = hidden ? 24 : 12;
+    return diagnosticSections.some(section => {
+      const rect = section.getBoundingClientRect();
+      return rect.height > 0 && rect.bottom > top - diagnosticClearance && rect.top < bottom + diagnosticClearance;
+    }) || originalImages.some(image => {
+      const rect = image.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 && rect.left < right + 4 && rect.right > left - 4
+        && rect.top < lower && rect.bottom > upper && getComputedStyle(image).visibility === 'visible';
+    }) || localOriginalContentBounds(left - 4, right + 4, upper, lower).length > 0;
   }
 
-  function positionToggle() {
-    const rect = toggle.getBoundingClientRect();
-    const top = safeToggleTop(rect, navOffset() + 8);
-    toggle.toggleAttribute('data-diag-obstructed', top === undefined);
-    if (top !== undefined) toggle.style.setProperty('--diag-toggle-top', `${top}px`);
+  let revealTimer;
+  function updateToggleVisibility() {
+    const hidden = toggle.hasAttribute('data-diag-obstructed');
+    if (toggleIsObstructed(hidden)) {
+      clearTimeout(revealTimer);
+      revealTimer = undefined;
+      toggle.toggleAttribute('data-diag-obstructed', true);
+    } else if (hidden && revealTimer === undefined) {
+      // Require a wider, sustained gap so brief clearings do not flash the toggle.
+      revealTimer = setTimeout(() => {
+        revealTimer = undefined;
+        if (!toggleIsObstructed(true)) toggle.removeAttribute('data-diag-obstructed');
+      }, 120);
+    }
   }
 
   let toggleFrame = 0;
-  function scheduleTogglePosition() {
+  function scheduleToggleVisibility() {
     if (toggleFrame) return;
     toggleFrame = requestAnimationFrame(() => {
       toggleFrame = 0;
-      positionToggle();
+      updateToggleVisibility();
     });
   }
 
-  const toggleObserver = new ResizeObserver(scheduleTogglePosition);
-  for (const element of [navBar, toggle, ...diagnosticSections]) {
+  const toggleObserver = new ResizeObserver(scheduleToggleVisibility);
+  for (const element of [navBar, toggle, document.getElementById('siteWrapper'), ...diagnosticSections]) {
     toggleObserver.observe(element);
   }
-  window.addEventListener('scroll', scheduleTogglePosition, { passive: true });
-  window.addEventListener('resize', scheduleTogglePosition);
-  viewport?.addEventListener('scroll', scheduleTogglePosition, { passive: true });
-  viewport?.addEventListener('resize', scheduleTogglePosition);
-  new MutationObserver(scheduleTogglePosition).observe(header, {
+  window.addEventListener('scroll', scheduleToggleVisibility, { passive: true });
+  window.addEventListener('resize', scheduleToggleVisibility);
+  viewport?.addEventListener('scroll', scheduleToggleVisibility, { passive: true });
+  viewport?.addEventListener('resize', scheduleToggleVisibility);
+  new MutationObserver(scheduleToggleVisibility).observe(header, {
     attributes: true,
     attributeFilter: ['data-local-header-obstructed']
   });
   for (const eventName of ['transitionend', 'transitioncancel']) {
     header.addEventListener(eventName, event => {
-      if (event.target === header && event.propertyName === 'transform') scheduleTogglePosition();
+      if (event.target === header && event.propertyName === 'transform') scheduleToggleVisibility();
     });
   }
-  document.fonts.addEventListener('loadingdone', scheduleTogglePosition);
+  document.fonts.addEventListener('loadingdone', scheduleToggleVisibility);
 
   function revealHashTarget(hash) {
     const id = hash.slice(1);
@@ -296,7 +308,7 @@
   }
 
   renderDiagnostics(true);
-  positionToggle();
+  updateToggleVisibility();
   window.addEventListener('hashchange', () => revealHashTarget(window.location.hash));
   if (window.location.hash) {
     // CSS and fonts can change the target's position during the initial load.
