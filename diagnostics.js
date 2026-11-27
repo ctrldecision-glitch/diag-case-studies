@@ -123,7 +123,7 @@
       <li>The financial cost of waiting.</li>
       <li>The expected three-month outcome.</li>
     </ul>
-    <p class="diag-central-closing">A buyer who can't judge the value doesn't say no. They say "later."</p>
+    <p class="diag-central-closing">A buyer who can't judge the value doesn't say no. They say \"later.\"</p>
   </div>`;
 
   const toggle = document.createElement('button');
@@ -151,7 +151,6 @@
   const navBar = header.querySelector('.header-announcement-bar-wrapper') ?? header;
   const navOffset = () => Math.ceil(navBar.getBoundingClientRect().height);
   const headerClearance = () => navOffset() + 12;
-  const viewport = window.visualViewport;
   let expanded = null;
 
   function fitChapterFiveEntry() {
@@ -227,33 +226,10 @@
     positionToggle();
   });
 
-  function safeToggleTop({ left, right, height }, defaultTop) {
-    const clearance = 12;
-    const viewportTop = viewport?.offsetTop ?? 0;
-    const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight);
-    // Keep the upper slot stable until the original navigation has slid away.
-    const headerIsHidden = header.hasAttribute('data-local-header-obstructed')
-      || (header.style.transform === 'translateY(-100%)' && navBar.getBoundingClientRect().bottom <= 0.5);
-    const headerBottom = headerIsHidden ? 0 : navOffset();
-    const firstTop = Math.ceil(Math.max(viewportTop, headerBottom) + 8);
-    const lastTop = Math.floor(viewportBottom - height - 8);
-    const obstacles = diagnosticSections.map(section => section.getBoundingClientRect()).filter(rect =>
-      rect.height && rect.bottom + clearance > viewportTop && rect.top - clearance < viewportBottom
-    );
-    obstacles.push(...localOriginalContentBounds(left - 4, right + 4, viewportTop - clearance, viewportBottom + clearance));
-    // Prefer stable viewport edges and keep the current slot if it is still safe.
-    const currentTop = parseFloat(toggle.style.getPropertyValue('--diag-toggle-top'));
-    const candidates = [defaultTop, lastTop, firstTop, currentTop, ...obstacles.map(rect => Math.ceil(rect.bottom + clearance))];
-    return candidates.find(y => y >= firstTop && y <= lastTop && obstacles.every(rect =>
-      y >= rect.bottom + clearance || y + height <= rect.top - clearance
-    ));
-  }
-
+  // Keep the control in one viewport slot; moving it around page content during scroll
+  // caused visible jumps across screen sizes.
   function positionToggle() {
-    const rect = toggle.getBoundingClientRect();
-    const top = safeToggleTop(rect, navOffset() + 8);
-    toggle.toggleAttribute('data-diag-obstructed', top === undefined);
-    if (top !== undefined) toggle.style.setProperty('--diag-toggle-top', `${top}px`);
+    toggle.style.setProperty('--diag-toggle-top', `${navOffset() + 8}px`);
   }
 
   let toggleFrame = 0;
@@ -266,23 +242,8 @@
   }
 
   const toggleObserver = new ResizeObserver(scheduleTogglePosition);
-  for (const element of [navBar, toggle, ...diagnosticSections]) {
-    toggleObserver.observe(element);
-  }
-  window.addEventListener('scroll', scheduleTogglePosition, { passive: true });
+  toggleObserver.observe(navBar);
   window.addEventListener('resize', scheduleTogglePosition);
-  viewport?.addEventListener('scroll', scheduleTogglePosition, { passive: true });
-  viewport?.addEventListener('resize', scheduleTogglePosition);
-  new MutationObserver(scheduleTogglePosition).observe(header, {
-    attributes: true,
-    attributeFilter: ['data-local-header-obstructed']
-  });
-  for (const eventName of ['transitionend', 'transitioncancel']) {
-    header.addEventListener(eventName, event => {
-      if (event.target === header && event.propertyName === 'transform') scheduleTogglePosition();
-    });
-  }
-  document.fonts.addEventListener('loadingdone', scheduleTogglePosition);
 
   function revealHashTarget(hash) {
     const id = hash.slice(1);
