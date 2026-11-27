@@ -245,7 +245,7 @@
 .diag-toggle {
   appearance: none;
   position: fixed;
-  top: var(--diag-toggle-top, 8px);
+  top: max(90px, calc(env(safe-area-inset-top) + 8px));
   right: max(12px, env(safe-area-inset-right));
   z-index: 10;
   display: flex;
