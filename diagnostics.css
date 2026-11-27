@@ -1,0 +1,301 @@
+.diag-strip,
+.diag-central,
+.diag-toggle,
+.diag-disclosure {
+  --diag-bg: #171816;
+  --diag-text: #eeece6;
+  --diag-secondary: #a6a49d;
+  --diag-brass: #a68a5b;
+  --diag-divider: #353631;
+  --diag-gutter: clamp(20px, 4vw, 64px);
+  --diag-padding: 32px;
+  --diag-font: system-ui, sans-serif;
+  font-family: var(--diag-font);
+  color: var(--diag-text);
+}
+
+.diag-strip {
+  box-sizing: border-box;
+  max-width: 1200px;
+  width: calc(100% - 2 * var(--diag-gutter));
+  margin: 0 auto;
+  border-radius: 4px;
+  background: var(--diag-bg);
+}
+
+.diag-item + .diag-item {
+  border-top: 1px solid var(--diag-divider);
+}
+
+.diag-strip .diag-heading {
+  margin: 0;
+  font: inherit;
+}
+
+.diag-trigger {
+  appearance: none;
+  position: relative;
+  display: grid;
+  grid-template-columns: 2ch minmax(0, 1fr) 1em;
+  align-items: center;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--diag-padding);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--diag-text);
+  font: 500 20px / 1.35 var(--diag-font);
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.diag-item:first-child .diag-trigger::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -12px;
+  top: 50%;
+  width: 12px;
+  height: 1px;
+  background: var(--diag-brass);
+  pointer-events: none;
+}
+
+.diag-number,
+.diag-symbol {
+  color: var(--diag-brass);
+}
+
+.diag-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.diag-symbol {
+  text-align: right;
+}
+
+.diag-trigger:focus-visible,
+.diag-toggle:focus-visible {
+  outline: 2px solid var(--diag-brass);
+  outline-offset: -4px;
+}
+
+.diag-panel {
+  padding: 0 var(--diag-padding) var(--diag-padding);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--diag-secondary);
+}
+
+.diag-panel[hidden] {
+  display: none;
+}
+
+.diag-panel p,
+.diag-editorial p,
+.diag-panel ul {
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: normal;
+}
+
+/* The exported site's paragraph and heading fonts are marked important. */
+.diag-panel p,
+.diag-editorial p,
+.diag-editorial h2,
+#footer-sections .diag-disclosure {
+  font-family: var(--diag-font) !important;
+}
+
+.diag-panel p + p,
+.diag-editorial p + p {
+  margin-top: 12px;
+}
+
+.diag-decision,
+.diag-comparison {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--diag-divider);
+}
+
+.diag-decision {
+  color: var(--diag-text);
+}
+
+.diag-panel .diag-label {
+  margin: 0 0 6px;
+  color: var(--diag-brass);
+  font-size: 11px;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.diag-panel .diag-label + p {
+  margin-top: 0;
+}
+
+.diag-links,
+.diag-comparison ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+}
+
+.diag-links {
+  margin-top: 16px;
+}
+
+.diag-links a {
+  color: var(--diag-secondary);
+  text-decoration: underline;
+  text-decoration-color: var(--diag-brass);
+  text-underline-offset: 3px;
+}
+
+.diag-links a:hover {
+  color: var(--diag-text);
+}
+
+.diag-links a:focus-visible {
+  outline: 2px solid var(--diag-brass);
+  outline-offset: 3px;
+}
+
+.diag-comparison {
+  font-size: 14px;
+}
+
+.diag-comparison ul {
+  margin-bottom: 10px;
+  padding: 0;
+  list-style: none;
+  color: var(--diag-text);
+}
+
+.diag-comparison li {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+
+.diag-comparison ul li::before {
+  content: none;
+}
+
+.diag-comparison .diag-calendar {
+  margin-top: 0;
+  overflow-wrap: anywhere;
+}
+
+#diag-three-month-package .diag-evidence-highlight {
+  outline: 1px solid #a68a5b;
+  outline-offset: 3px;
+}
+
+.diag-central {
+  box-sizing: border-box;
+  width: 100%;
+  padding: clamp(56px, 9vw, 140px) var(--diag-gutter);
+  border-radius: 4px;
+  background: var(--diag-bg);
+}
+
+.diag-editorial {
+  max-width: 740px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.diag-editorial::before {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  margin-bottom: 24px;
+  background: var(--diag-brass);
+}
+
+.diag-editorial h2 {
+  margin: 0 0 24px;
+  color: var(--diag-text);
+  font-size: clamp(26px, 4vw, 44px);
+  font-weight: 500 !important;
+  letter-spacing: normal;
+  line-height: 1.2;
+}
+
+.diag-toggle {
+  appearance: none;
+  position: fixed;
+  top: calc(var(--diag-nav-height, 0px) + 8px);
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--diag-divider);
+  border-radius: 4px;
+  background: var(--diag-bg);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.header--menu-open .diag-toggle {
+  visibility: hidden;
+}
+
+.diag-switch {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 28px;
+  height: 16px;
+  padding: 2px;
+  border: 1px solid var(--diag-secondary);
+  border-radius: 10px;
+}
+
+.diag-switch::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--diag-text);
+}
+
+.diag-toggle[aria-checked='true'] .diag-switch {
+  justify-content: flex-end;
+  border-color: var(--diag-brass);
+  background: var(--diag-brass);
+}
+
+#footer-sections .diag-disclosure {
+  margin: 0;
+  padding: 12px var(--diag-gutter);
+  background: var(--diag-bg);
+  color: var(--diag-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .diag-strip {
+    --diag-padding: 20px;
+  }
+
+  .diag-trigger {
+    gap: 10px;
+  }
+}
