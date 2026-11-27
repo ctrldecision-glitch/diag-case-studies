@@ -1,3 +1,36 @@
+/* Faces used by the original DIAG site: https://delightful-beet-831632.framer.app/ */
+@font-face {
+  font-family: 'DIAG Instrument';
+  src: url('https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zcZj1bIkNo.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DIAG Instrument';
+  src: url('https://fonts.gstatic.com/s/instrumentserif/v5/jizHRFtNs2ka5fXjeivQ4LroWlx-6zATjnTNgNq55w.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DIAG Geist';
+  src: url('https://fonts.gstatic.com/s/geist/v5/gyBhhwUxId8gMGYQMKR3pzfaWI_RnOM4mJPby1QNtA.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DIAG Inter';
+  src: url('https://framerusercontent.com/assets/GrgcKwrN6d3Uz8EwcLHZxwEfC4.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 .diag-strip,
 .diag-central,
 .diag-toggle,
@@ -9,7 +42,8 @@
   --diag-divider: #353631;
   --diag-gutter: clamp(20px, 4vw, 64px);
   --diag-padding: 32px;
-  --diag-font: system-ui, sans-serif;
+  --diag-font: 'DIAG Geist', Geist, Arial, sans-serif;
+  --diag-serif: 'DIAG Instrument', 'Instrument Serif', Georgia, serif;
   font-family: var(--diag-font);
   color: var(--diag-text);
 }
@@ -21,6 +55,12 @@
   margin: 0 auto;
   border-radius: 4px;
   background: var(--diag-bg);
+}
+
+@media (min-width: 1024px) {
+  .diag-pricing-strip {
+    margin-block-start: var(--diag-pricing-offset, 0px);
+  }
 }
 
 .diag-item + .diag-item {
@@ -37,7 +77,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 2ch minmax(0, 1fr) 1em;
-  align-items: center;
+  align-items: first baseline;
   gap: 16px;
   box-sizing: border-box;
   width: 100%;
@@ -46,7 +86,7 @@
   border-radius: 4px;
   background: transparent;
   color: var(--diag-text);
-  font: 500 20px / 1.35 var(--diag-font);
+  font: 400 20px / 1.35 var(--diag-font);
   text-align: left;
   white-space: normal;
   cursor: pointer;
@@ -70,6 +110,12 @@
 
 .diag-number {
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+.diag-title {
+  font-family: var(--diag-serif);
+  letter-spacing: -0.02em;
 }
 
 .diag-symbol {
@@ -86,6 +132,7 @@
   padding: 0 var(--diag-padding) var(--diag-padding);
   font-size: 16px;
   line-height: 1.6;
+  letter-spacing: -0.2px;
   color: var(--diag-secondary);
 }
 
@@ -99,13 +146,12 @@
   margin: 0;
   font: inherit;
   color: inherit;
-  letter-spacing: normal;
+  letter-spacing: inherit;
 }
 
 /* The exported site's paragraph and heading fonts are marked important. */
 .diag-panel p,
 .diag-editorial p,
-.diag-editorial h2,
 #footer-sections .diag-disclosure {
   font-family: var(--diag-font) !important;
 }
@@ -126,17 +172,24 @@
   color: var(--diag-text);
 }
 
-.diag-panel .diag-label {
+.diag-panel .diag-label,
+.diag-editorial .diag-label {
   margin: 0 0 6px;
   color: var(--diag-brass);
   font-size: 11px;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: 1.8px;
 }
 
 .diag-panel .diag-label + p {
   margin-top: 0;
+}
+
+.diag-decision .diag-label + p {
+  font-family: var(--diag-serif) !important;
+  font-style: italic;
+  letter-spacing: -0.2px;
 }
 
 .diag-links,
@@ -152,6 +205,8 @@
 
 .diag-links a {
   color: var(--diag-secondary);
+  font-family: inherit;
+  letter-spacing: inherit;
   text-decoration: underline;
   text-decoration-color: var(--diag-brass);
   text-underline-offset: 3px;
@@ -161,7 +216,8 @@
   color: var(--diag-text);
 }
 
-.diag-links a:focus-visible {
+.diag-links a:focus-visible,
+.diag-comparison summary:focus-visible {
   outline: 2px solid var(--diag-brass);
   outline-offset: 3px;
 }
@@ -187,8 +243,19 @@
   content: none;
 }
 
+.diag-comparison summary {
+  display: list-item;
+  width: fit-content;
+  font: inherit;
+  cursor: pointer;
+}
+
+.diag-comparison summary::marker {
+  color: var(--diag-brass);
+}
+
 .diag-comparison .diag-calendar {
-  margin-top: 0;
+  margin-top: 6px;
   overflow-wrap: anywhere;
 }
 
@@ -210,6 +277,7 @@
   margin: 0 auto;
   font-size: 16px;
   line-height: 1.6;
+  letter-spacing: -0.1px;
 }
 
 .diag-editorial::before {
@@ -224,10 +292,15 @@
 .diag-editorial h2 {
   margin: 0 0 24px;
   color: var(--diag-text);
+  font-family: var(--diag-serif) !important;
   font-size: clamp(26px, 4vw, 44px);
-  font-weight: 500 !important;
-  letter-spacing: normal;
+  font-weight: 400 !important;
+  letter-spacing: -0.026em;
   line-height: 1.2;
+}
+
+.diag-editorial .diag-label {
+  margin-bottom: 12px;
 }
 
 .diag-toggle {
@@ -245,6 +318,7 @@
   border: 1px solid var(--diag-divider);
   border-radius: 4px;
   background: var(--diag-bg);
+  font-family: 'DIAG Inter', Inter, Arial, sans-serif;
   font-size: 13px;
   font-weight: 500;
   line-height: 1;
@@ -281,6 +355,7 @@ body.header--menu-open .diag-toggle {
 }
 
 #footer-sections .diag-disclosure {
+  --diag-font: system-ui, sans-serif;
   margin: 0;
   padding: 12px var(--diag-gutter);
   background: var(--diag-bg);
@@ -297,5 +372,17 @@ body.header--menu-open .diag-toggle {
 
   .diag-trigger {
     gap: 10px;
+  }
+
+  .diag-number {
+    letter-spacing: -0.3px;
+  }
+
+  .diag-panel {
+    letter-spacing: -0.1px;
+  }
+
+  .diag-editorial h2 {
+    letter-spacing: -0.023em;
   }
 }

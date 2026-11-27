@@ -5,6 +5,7 @@
   const chapterThree = section('682327c7a3c4af090d913e05');
   const chapterFour = section('68235e0ffd0bc774bd9e8647');
   const pricing = section('6797b7e93da35e55cc604499');
+  const packageGrid = pricing?.querySelector('.coaching-packages');
   const bloomInterventions = section('674f0b978d7c0436bb1aad36');
   const bloomResults = section('68236a51ea2bb56a69276811')?.querySelector('h2');
   const footer = document.getElementById('footer-sections');
@@ -13,7 +14,7 @@
   const raylaResult = [...(raylaPanel?.querySelectorAll('p') ?? [])]
     .find(paragraph => paragraph.textContent.includes('double her profits'));
   const raylaTrigger = raylaPanel?.closest('.accordion-item')?.querySelector('.accordion-item__click-target');
-  const packageCard = [...(pricing?.querySelectorAll('.package-box') ?? [])]
+  const packageCard = [...(packageGrid?.querySelectorAll('.package-box') ?? [])]
     .find(card => card.querySelector('.title')?.textContent.includes('3-Month'));
 
   if (![chapterThree, chapterFour, pricing, bloomInterventions, footer, header,
@@ -89,8 +90,10 @@
           <li>I'M READY!</li>
           <li>SIGN ME UP!</li>
         </ul>
-        <p>Shared calendar destination</p>
-        <p class="diag-calendar">https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2cyZQVweeJTm2zAnsn4jfr8XXkIPJlzNROXxUpnFTdW-V92j-XHtWE2juiANz3WH8T9h7W5KPQ</p>
+        <details>
+          <summary>Shared calendar destination</summary>
+          <p class="diag-calendar">https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ2cyZQVweeJTm2zAnsn4jfr8XXkIPJlzNROXxUpnFTdW-V92j-XHtWE2juiANz3WH8T9h7W5KPQ</p>
+        </details>
       </div>`
     },
     {
@@ -136,6 +139,7 @@
   central.className = 'diag-central';
   central.setAttribute('aria-labelledby', 'diag-central-title');
   central.innerHTML = `<div class="diag-editorial">
+    <p class="diag-label">CENTRAL DECISION BREAK</p>
     <h2 id="diag-central-title">Price before sufficient commercial justification.</h2>
     <p>The buyer reaches $3,000 with an unclear financial cost of waiting, a vague three-month outcome, and detailed commercial evidence still further down the page.</p>
     <p>They know what they're paying for.</p>
@@ -152,21 +156,34 @@
   header.after(toggle);
 
   // The exported Fluid Engine grids have fixed tracks. Insert into document flow at their boundaries.
+  const pricingStrip = createStrip(diagnoses.slice(2, 5));
+  pricingStrip.classList.add('diag-pricing-strip');
   const strips = [
     [chapterThree, createStrip(diagnoses.slice(0, 1))],
     [chapterFour, createStrip(diagnoses.slice(1, 2))],
-    [pricing, createStrip(diagnoses.slice(2, 5))],
+    [pricing, pricingStrip],
     [bloomInterventions, createStrip(diagnoses.slice(5))]
   ];
   const originalSections = [...document.querySelectorAll('#page section[data-section-id]'), footer];
   const rows = strips.flatMap(([, strip]) => [...strip.querySelectorAll('.diag-item')]);
   let expanded = null;
 
+  function positionPricingStrip() {
+    // Reclaim the grid's unused trailing space without changing the original section.
+    const trailingSpace = pricing.getBoundingClientRect().bottom - packageGrid.getBoundingClientRect().bottom;
+    pricingStrip.style.setProperty('--diag-pricing-offset', `${40 - trailingSpace}px`);
+  }
+
+  const pricingObserver = new ResizeObserver(positionPricingStrip);
+  pricingObserver.observe(pricing);
+  pricingObserver.observe(packageGrid);
+
   function setExpanded(index, open) {
     const row = rows[index];
     row.querySelector('.diag-trigger').setAttribute('aria-expanded', String(open));
     row.querySelector('.diag-symbol').textContent = open ? '−' : '+';
     row.querySelector('.diag-panel').hidden = !open;
+    if (!open) row.querySelector('details[open]')?.removeAttribute('open');
     diagnoses[index].highlight?.classList.toggle('diag-evidence-highlight', open);
   }
 
@@ -190,6 +207,7 @@
 
   function renderDiagnostics(enabled) {
     if (enabled) {
+      positionPricingStrip();
       for (const [anchor, strip] of strips) anchor.after(strip);
       footer.before(central);
       return;
