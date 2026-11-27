@@ -1,6 +1,7 @@
 /* The original CSS cascade is in assets/. These rules replace runtime-only UI states. */
 .header-nav-item.local-folder-open .header-nav-folder-content{opacity:1;visibility:visible;pointer-events:auto}
 body.header--menu-open #header{position:fixed;inset:0 0 auto;transform:none!important}
+#header[data-local-header-obstructed]{visibility:hidden}
 body.header--menu-open .header-burger-btn .top-bun{top:50%!important;bottom:auto!important;transform:rotate(45deg);background-color:#fff!important}
 body.header--menu-open .header-burger-btn .patty{opacity:0}
 body.header--menu-open .header-burger-btn .bottom-bun{top:50%!important;bottom:auto!important;transform:rotate(-45deg);background-color:#fff!important}
@@ -9,7 +10,7 @@ body.header--menu-open .header-title-logo img{filter:brightness(0) invert(1)}
 .local-review-expanded .es-text-shortener{-webkit-line-clamp:unset!important;max-height:none!important;height:auto!important}
 /* The hosted review service inserts these rules at runtime; retain its card presentation locally. */
 #block-ed0df73b4084e62aee94{position:relative}
-#block-ed0df73b4084e62aee94 .swiper{overflow:hidden;width:100%}
+#block-ed0df73b4084e62aee94 .swiper{overflow-x:auto;overflow-y:hidden;width:100%;scrollbar-width:none;overscroll-behavior-x:none;touch-action:auto}
 #block-ed0df73b4084e62aee94 .swiper-wrapper{display:flex;align-items:stretch;gap:20px;transform:none!important;height:auto!important}
 #block-ed0df73b4084e62aee94 .swiper-slide{flex:0 0 calc((100% - 60px)/4);width:calc((100% - 60px)/4)!important;margin:0!important}
 #block-ed0df73b4084e62aee94 .es-review-container{height:100%;font:400 14px/20px Outfit,sans-serif;color:#111;text-align:left}
@@ -49,4 +50,13 @@ body.header--menu-open .header-title-logo img{filter:brightness(0) invert(1)}
 #block-ed0df73b4084e62aee94 button[aria-label="Next"]{right:-20px}
 #block-ed0df73b4084e62aee94 button[disabled]{visibility:hidden}
 @media(max-width:767px){#block-ed0df73b4084e62aee94 .swiper-slide{flex-basis:100%;width:100%!important}#block-ed0df73b4084e62aee94 .es-review-background-container{min-height:268px}}
+@media (max-width: 767px) {
+  /* The original mobile portrait is 72px, or the width of its grid cell on narrow screens. */
+  #block-yui_3_17_2_1_1733231027428_14783 .fluid-image-container {
+    --image-component-container-width: min(100%, 72px);
+    --image-component-container-height: auto;
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}

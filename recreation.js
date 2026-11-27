@@ -32,11 +32,15 @@ document.addEventListener('submit',event=>event.preventDefault(),true);
 const header=document.querySelector('#header');
 const burgers=document.querySelectorAll('.header-burger-btn');
 function setMenu(open){
- if(open&&header)header.style.transform='none';
+ if(open&&header){
+  header.removeAttribute('data-local-header-obstructed');
+  header.style.transform='none';
+ }
  document.body.classList.toggle('header--menu-open',open);
  burgers.forEach(burger=>burger.setAttribute('aria-expanded',String(open)));
  document.querySelectorAll('.js-header-burger-open-title').forEach(e=>e.toggleAttribute('hidden',open));
  document.querySelectorAll('.js-header-burger-close-title').forEach(e=>e.toggleAttribute('hidden',!open));
+ if(!open) scheduleHeaderPosition();
 }
 burgers.forEach(burger=>burger.addEventListener('click',()=>setMenu(!document.body.classList.contains('header--menu-open'))));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
@@ -66,12 +70,63 @@ document.querySelectorAll('.accordion-item__click-target').forEach(button=>{
   button.closest('.accordion-item')?.classList.toggle('local-accordion-open',open);
  });
 });
-let lastY=0;
+const originalControls = '.accordion-item__click-target, .sqs-block-button-element, button, input, textarea, select, .es-carousel-outer';
+const originalWordmark = '#footer-sections img[alt="Worth The Journey Logo White"]';
+const originalContent = [...document.querySelectorAll(
+ `:is(#page, #footer-sections) :is(h1,h2,h3,h4,h5,h6,p,li,${originalControls}), ${originalWordmark}`
+)];
+const textRange = document.createRange();
+
+function localOriginalContentBounds(left, right, top, bottom) {
+ const inBounds = block => block.width && block.height && block.right > left && block.left < right
+  && block.bottom > top && block.top < bottom;
+ const rects = [];
+ for (const element of originalContent) {
+  const box = element.getBoundingClientRect();
+  if (!inBounds(box) || getComputedStyle(element).visibility !== 'visible'
+    || element.closest('.accordion-item__dropdown:not(.accordion-item__dropdown--open)')) continue;
+  if (element.matches(`${originalControls}, ${originalWordmark}`)) {
+   rects.push(box);
+  } else {
+   textRange.selectNodeContents(element);
+   rects.push(...Array.from(textRange.getClientRects()).filter(inBounds));
+  }
+ }
+ return rects;
+}
+
+const originalNav = header?.querySelector('.header-announcement-bar-wrapper') ?? header;
+let lastY = scrollY;
+let headerRequested = scrollY <= 120;
+let headerFrame = 0;
+function scheduleHeaderPosition() {
+ if (!header || headerFrame) return;
+ headerFrame = requestAnimationFrame(() => {
+  headerFrame = 0;
+  if (document.body.classList.contains('header--menu-open')) return;
+  const bottom = originalNav.getBoundingClientRect().height + 4;
+  const coversDiagnostics = [...document.querySelectorAll('.diag-strip, .diag-central')].some(section => {
+   const rect = section.getBoundingClientRect();
+   return rect.bottom > 0 && rect.top < bottom;
+  });
+  const obstructed = coversDiagnostics || localOriginalContentBounds(0, innerWidth, 0, bottom).length > 0;
+  header.toggleAttribute('data-local-header-obstructed', obstructed);
+  const transform = headerRequested && !obstructed ? 'translateY(0)' : 'translateY(-100%)';
+  if (header.style.transform !== transform) header.style.transform = transform;
+ });
+}
 addEventListener('scroll',()=>{
  const y=scrollY;
- if(header&&!document.body.classList.contains('header--menu-open')){header.style.transform=y>lastY&&y>120?'translateY(-100%)':'translateY(0)'}
+ if (y !== lastY) headerRequested = y <= lastY || y <= 120;
  lastY=y;
+ scheduleHeaderPosition();
 },{passive:true});
+if (originalNav) {
+ const headerObserver = new ResizeObserver(scheduleHeaderPosition);
+ headerObserver.observe(originalNav);
+ headerObserver.observe(document.querySelector('#siteWrapper'));
+}
+document.fonts.addEventListener('loadingdone', scheduleHeaderPosition);
 document.querySelectorAll('.es-text-shortener-control').forEach(button=>{
  button.addEventListener('click',()=>{
   const parent=button.closest('.es-text-shortener-container');
@@ -82,15 +137,30 @@ document.querySelectorAll('.es-text-shortener-control').forEach(button=>{
 const reviewWidget=document.getElementById('block-ed0df73b4084e62aee94');
 if(reviewWidget){
  const viewport=reviewWidget.querySelector('.swiper');
+ const slides=[...viewport.querySelectorAll('.swiper-wrapper > .swiper-slide')];
+ slides.slice(6).forEach(slide=>slide.remove());
  const next=reviewWidget.querySelector('[aria-label="Next"]');
  const previous=reviewWidget.querySelector('[aria-label="Previous"]');
- const update=()=>{previous?.setAttribute('aria-disabled',String(viewport.scrollLeft<2));next?.setAttribute('aria-disabled',String(viewport.scrollLeft+viewport.clientWidth>=viewport.scrollWidth-2))};
+ const end=()=>Math.max(0,viewport.scrollWidth-viewport.clientWidth);
+ const setDisabled=(control,disabled)=>{
+  if(!control)return;
+  control.setAttribute('aria-disabled',String(disabled));
+  control.tabIndex=disabled?-1:0;
+ };
+ const update=()=>{
+  setDisabled(previous,viewport.scrollLeft<=1);
+  setDisabled(next,viewport.scrollLeft>=end()-1);
+ };
  const move=direction=>{
-  const stride=viewport.querySelector('.swiper-slide').getBoundingClientRect().width+20;
-  const count=Math.max(1,Math.floor((viewport.clientWidth+20)/stride));
-  viewport.scrollBy({left:direction*stride*count,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+  const first=slides[0].getBoundingClientRect();
+  const stride=slides[1].getBoundingClientRect().left-first.left;
+  const count=Math.max(1,Math.round(viewport.clientWidth/stride));
+  const left=Math.min(end(),Math.max(0,viewport.scrollLeft+direction*stride*count));
+  viewport.scrollTo({left,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
  };
  next?.addEventListener('click',()=>move(1));previous?.addEventListener('click',()=>move(-1));
  [next,previous].forEach((button,i)=>button?.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();move(i===0?1:-1)}}));
- viewport?.addEventListener('scroll',update,{passive:true});addEventListener('resize',update);update();
+ viewport.addEventListener('scroll',update,{passive:true});
+ new ResizeObserver(update).observe(viewport);
+ update();
 }

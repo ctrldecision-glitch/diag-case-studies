@@ -4,15 +4,17 @@
   const section = id => document.querySelector(`[data-section-id="${id}"]`);
   const chapterThree = section('682327c7a3c4af090d913e05');
   const chapterFour = section('68235e0ffd0bc774bd9e8647');
+  const chapterFive = section('682362913049eb0d653cde05');
+  const entryArtwork = chapterFive?.querySelector('#block-yui_3_17_2_1_1747149368469_8789 img');
   const pricing = section('6797b7e93da35e55cc604499');
   const packageGrid = pricing?.querySelector('.coaching-packages');
-  const bloomInterventions = section('674f0b978d7c0436bb1aad36');
+  const bloomResults = section('68236a51ea2bb56a69276811');
   const footer = document.getElementById('footer-sections');
   const header = document.getElementById('header');
   const packageCard = [...(packageGrid?.querySelectorAll('.package-box') ?? [])]
     .find(card => card.querySelector('.title')?.textContent.includes('3-Month'));
 
-  if (![chapterThree, chapterFour, pricing, bloomInterventions, footer, header, packageCard].every(Boolean)) return;
+  if (![chapterThree, chapterFour, pricing, bloomResults, footer, header, packageCard].every(Boolean)) return;
 
   const diagnoses = [
     {
@@ -20,39 +22,36 @@
       title: "A quiet month never gets a price",
       paragraphs: [
         "The story says \"No steady flow. No predictability.\" Then it moves straight to the coach. It never says what one quiet month costs.",
-        "The first dollar figure on the page is the $250 Focus Session.",
-        "With no cost on the page, waiting is free. $3,000 gets compared with $0."
+        "When the buyer eventually reaches pricing, they'll know what coaching costs, but not what waiting costs."
       ],
       question: "What is waiting costing my business?"
     },
     {
       number: '02',
-      title: "The plan is on the page. The help to carry it out is in the FAQ",
+      title: "The plan is clear. The help to carry it out isn't.",
       paragraphs: [
-        "Coaching covers four things: niche and message, offers and pricing, a marketing plan, and organization. All four are planning.",
-        "The page also says Maya already \"absorbed a flood of advice.\"",
-        "Help with writing copy, creating content and implementing appears only in the FAQ. The $3,000 package doesn't list it.",
-        "They think: \"I've had advice before. Will I still be doing this alone?\""
+        "The page explains the four areas the coaching covers, but not how the coach helps put them into practice.",
+        "Maya has already \"absorbed a flood of advice.\" She needs more than another plan.",
+        "Practical implementation support is explained much later, in the FAQ."
       ],
       question: "Will I get help doing the work, or only a plan?"
     },
     {
       number: '03',
-      title: "Seven sessions, no finish line",
+      title: "The sessions are defined. The outcome isn't.",
       paragraphs: [
         "The $3,000 package lists one 90-minute session, six 60-minute sessions, unlimited messaging and templates. Its only result line is \"Launch strong and start booking the right clients.\"",
-        "No number. No time frame. The buyer can count the hours, but can't see what three months produces."
+        "The buyer can count the hours, but can't see what progress to expect by the end of three months."
       ],
       question: "What will be different in my business after three months?",
       highlight: packageCard.querySelector('.features li:last-child')
     },
     {
       number: '04',
-      title: "The proof that justifies $3,000 sits below the $3,000",
+      title: "The price arrives before the strongest proof",
       paragraphs: [
-        "The only testimonial above the price says profits \"literally doubled.\" It gives no figures.",
-        "Rayla's $35,000 to $70,000 appears in the FAQ. BloomDance's 2.5× comes after the packages.",
-        "The buyer meets the price holding one word: \"doubled.\" Doubled from what?"
+        "The testimonial above the price says profits \"literally doubled.\" No starting figure. No end figure. No time frame.",
+        "The detailed financial results appear further down the page, after the buyer is presented with a $3,000 investment."
       ],
       question: "Has this worked well enough to be worth the investment?",
       highlight: packageCard.querySelector('.price')
@@ -69,7 +68,7 @@
     },
     {
       number: '06',
-      title: "The proof sold a bigger job than the $3,000 package",
+      title: "The case study includes work the package doesn't.",
       paragraphs: [
         "BloomDance's results came with pricing changes, SEO, social and email marketing, a rebrand and a new website.",
         "The $3,000 package lists sessions, messaging and templates. No rebrand. No website. The page never says what coaching alone contributed.",
@@ -80,9 +79,11 @@
   ];
 
   function createStrip(items) {
-    const strip = document.createElement('div');
+    const strip = document.createElement('section');
     strip.className = 'diag-strip';
-    strip.innerHTML = items.map(({ number, title, paragraphs, question }) => `
+    const inner = document.createElement('div');
+    inner.className = 'diag-strip-inner';
+    inner.innerHTML = items.map(({ number, title, paragraphs, question }) => `
       <div class="diag-item">
         <h3 class="diag-heading">
           <button class="diag-trigger" type="button" id="diag-trigger-${number}"
@@ -101,6 +102,7 @@
           </div>
         </div>
       </div>`).join('');
+    strip.append(inner);
     return strip;
   }
 
@@ -111,12 +113,17 @@
     <p class="diag-label">CENTRAL DECISION BREAK</p>
     <h2 id="diag-central-title">The price arrives before the reasons to pay it</h2>
     <p>At $3,000 the buyer knows what's in the package. They can't tell what it's worth.</p>
+    <h3 class="diag-central-group">Two answers arrive too late:</h3>
     <ul>
-      <li>Waiting has no cost (Break 01)</li>
-      <li>The package has no finish line (Break 03)</li>
-      <li>The proof comes after the price (Break 04)</li>
+      <li>Detailed financial proof.</li>
+      <li>Help putting the plan into practice.</li>
     </ul>
-    <p>A buyer who can't judge the value doesn't say no. They say "later."</p>
+    <h3 class="diag-central-group">Two answers never become clear:</h3>
+    <ul>
+      <li>The financial cost of waiting.</li>
+      <li>The expected three-month outcome.</li>
+    </ul>
+    <p class="diag-central-closing">A buyer who can't judge the value doesn't say no. They say "later."</p>
   </div>`;
 
   const toggle = document.createElement('button');
@@ -135,28 +142,29 @@
     [chapterThree, createStrip(diagnoses.slice(0, 1))],
     [chapterFour, createStrip(diagnoses.slice(1, 2))],
     [pricing, pricingStrip],
-    [bloomInterventions, createStrip(diagnoses.slice(5))]
+    [bloomResults, createStrip(diagnoses.slice(5))]
   ];
   const originalSections = [...document.querySelectorAll('#page section[data-section-id]'), footer];
   const rows = strips.flatMap(([, strip]) => [...strip.querySelectorAll('.diag-item')]);
   const triggers = rows.map(row => row.querySelector('.diag-trigger'));
-  const cards = strips.map(([, strip]) => strip);
+  const diagnosticSections = [...strips.map(([, strip]) => strip), central];
   const navBar = header.querySelector('.header-announcement-bar-wrapper') ?? header;
   const navOffset = () => Math.ceil(navBar.getBoundingClientRect().height);
   const headerClearance = () => navOffset() + 12;
-  const mobileToggle = window.matchMedia('(max-width: 767px), (pointer: coarse)');
   const viewport = window.visualViewport;
   let expanded = null;
 
-  function positionPricingStrip() {
-    // Reclaim the grid's unused trailing space without changing the original section.
-    const trailingSpace = pricing.getBoundingClientRect().bottom - packageGrid.getBoundingClientRect().bottom;
-    pricingStrip.style.setProperty('--diag-pricing-offset', `${40 - trailingSpace}px`);
+  function fitChapterFiveEntry() {
+    if (!entryArtwork || !chapterFive.previousElementSibling?.matches('.diag-strip')) return;
+    const padding = parseFloat(getComputedStyle(chapterFive).paddingBlockStart);
+    const overflow = chapterFive.getBoundingClientRect().top + padding - entryArtwork.getBoundingClientRect().top;
+    const space = `${Math.max(0, Math.ceil(overflow))}px`;
+    if (chapterFive.style.getPropertyValue('--diag-entry-space') !== space) {
+      chapterFive.style.setProperty('--diag-entry-space', space);
+    }
   }
 
-  const pricingObserver = new ResizeObserver(positionPricingStrip);
-  pricingObserver.observe(pricing);
-  pricingObserver.observe(packageGrid);
+  if (entryArtwork) new ResizeObserver(fitChapterFiveEntry).observe(chapterFive.querySelector('.fluid-engine'));
 
   function setExpanded(index, open) {
     const row = rows[index];
@@ -166,16 +174,10 @@
     diagnoses[index].highlight?.classList.toggle('diag-evidence-highlight', open);
   }
 
-  function keepPosition(anchor, update, minimumTop = -Infinity) {
+  function keepPosition(anchor, update) {
     const top = anchor.getBoundingClientRect().top;
-    const documentTop = top + window.scrollY;
     update();
-    const updatedTop = anchor.getBoundingClientRect().top;
-    // Scroll anchoring may already have moved the viewport when a row moves up.
-    // Leave room for the original fixed header, which returns on upward scroll.
-    const movedUp = updatedTop + window.scrollY < documentTop - 1;
-    const visibleTop = movedUp ? Math.max(top, minimumTop) : top;
-    const shift = updatedTop - visibleTop;
+    const shift = anchor.getBoundingClientRect().top - top;
     if (Math.abs(shift) > 0.5) window.scrollBy({ top: shift, behavior: 'instant' });
   }
 
@@ -185,16 +187,16 @@
         if (expanded !== null) setExpanded(expanded, false);
         expanded = expanded === index ? null : index;
         if (expanded !== null) setExpanded(expanded, true);
-      }, headerClearance());
+      });
       positionToggle();
     });
   });
 
   function renderDiagnostics(enabled) {
     if (enabled) {
-      positionPricingStrip();
       for (const [anchor, strip] of strips) anchor.after(strip);
       footer.before(central);
+      fitChapterFiveEntry();
       return;
     }
     if (expanded !== null) setExpanded(expanded, false);
@@ -225,30 +227,23 @@
     positionToggle();
   });
 
-  function desktopToggleTop({ left, right, height }, defaultTop) {
-    const obstacles = triggers.map(control => control.getBoundingClientRect())
-      .filter(rect => rect.height && rect.left < right && rect.right > left);
-    const candidates = [defaultTop, ...obstacles.map(rect => rect.bottom + 4)]
-      .filter(top => top >= defaultTop && top + height <= window.innerHeight)
-      .sort((a, b) => a - b);
-    return candidates.find(y => obstacles.every(rect => y >= rect.bottom || y + height <= rect.top)) ?? defaultTop;
-  }
-
-  function mobileToggleTop(height, defaultTop) {
+  function safeToggleTop({ left, right, height }, defaultTop) {
     const clearance = 12;
     const viewportTop = viewport?.offsetTop ?? 0;
     const viewportBottom = viewportTop + (viewport?.height ?? window.innerHeight);
     // Keep the upper slot stable until the original navigation has slid away.
-    const headerIsHidden = header.style.transform === 'translateY(-100%)'
-      && navBar.getBoundingClientRect().bottom <= 0.5;
+    const headerIsHidden = header.hasAttribute('data-local-header-obstructed')
+      || (header.style.transform === 'translateY(-100%)' && navBar.getBoundingClientRect().bottom <= 0.5);
     const headerBottom = headerIsHidden ? 0 : navOffset();
     const firstTop = Math.ceil(Math.max(viewportTop, headerBottom) + 8);
     const lastTop = Math.floor(viewportBottom - height - 8);
-    const obstacles = cards.map(card => card.getBoundingClientRect()).filter(rect =>
+    const obstacles = diagnosticSections.map(section => section.getBoundingClientRect()).filter(rect =>
       rect.height && rect.bottom + clearance > viewportTop && rect.top - clearance < viewportBottom
     );
-    // Prefer stable viewport edges before trying the gap below an individual strip.
-    const candidates = [defaultTop, lastTop, firstTop, ...obstacles.map(rect => Math.ceil(rect.bottom + clearance))];
+    obstacles.push(...localOriginalContentBounds(left - 4, right + 4, viewportTop - clearance, viewportBottom + clearance));
+    // Prefer stable viewport edges and keep the current slot if it is still safe.
+    const currentTop = parseFloat(toggle.style.getPropertyValue('--diag-toggle-top'));
+    const candidates = [defaultTop, lastTop, firstTop, currentTop, ...obstacles.map(rect => Math.ceil(rect.bottom + clearance))];
     return candidates.find(y => y >= firstTop && y <= lastTop && obstacles.every(rect =>
       y >= rect.bottom + clearance || y + height <= rect.top - clearance
     ));
@@ -256,8 +251,7 @@
 
   function positionToggle() {
     const rect = toggle.getBoundingClientRect();
-    const defaultTop = navOffset() + 8;
-    const top = mobileToggle.matches ? mobileToggleTop(rect.height, defaultTop) : desktopToggleTop(rect, defaultTop);
+    const top = safeToggleTop(rect, navOffset() + 8);
     toggle.toggleAttribute('data-diag-obstructed', top === undefined);
     if (top !== undefined) toggle.style.setProperty('--diag-toggle-top', `${top}px`);
   }
@@ -272,14 +266,17 @@
   }
 
   const toggleObserver = new ResizeObserver(scheduleTogglePosition);
-  for (const element of [navBar, toggle, ...cards]) {
+  for (const element of [navBar, toggle, ...diagnosticSections]) {
     toggleObserver.observe(element);
   }
   window.addEventListener('scroll', scheduleTogglePosition, { passive: true });
   window.addEventListener('resize', scheduleTogglePosition);
   viewport?.addEventListener('scroll', scheduleTogglePosition, { passive: true });
   viewport?.addEventListener('resize', scheduleTogglePosition);
-  mobileToggle.addEventListener('change', scheduleTogglePosition);
+  new MutationObserver(scheduleTogglePosition).observe(header, {
+    attributes: true,
+    attributeFilter: ['data-local-header-obstructed']
+  });
   for (const eventName of ['transitionend', 'transitioncancel']) {
     header.addEventListener(eventName, event => {
       if (event.target === header && event.propertyName === 'transform') scheduleTogglePosition();
